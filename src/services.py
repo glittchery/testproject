@@ -1,6 +1,7 @@
 import csv
 from src.database.models import Documents
 from src.database.database import session_factory
+from src.database.queries import get_documents, delete_document_db
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_bulk
 
@@ -57,5 +58,31 @@ async def insert_documents():
             await async_bulk(es, actions)
 
 
+async def search_documents(query: str):
+    elastic_response = await es.search(
+        index="documents",
+        query={
+            "match": {
+                "text": query
+            }
+        },
+        size=20
+    )
+    ids = [hit["_source"]["id"] for hit in elastic_response["hits"]["hits"]]
+    db_response = await get_documents(ids)
+    db_response = sorted(db_response, key=lambda document: document.created_date)
+
+    return db_response
+
+async def delete_document(document_id):
+    await delete_document_db(document_id)
+    await es.delete_by_query(
+        index="documents",
+        query={
+            "term": {
+                "id": document_id
+            }
+        }
+    )
 
 

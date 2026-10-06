@@ -1,6 +1,6 @@
 from src.database.database import engine, Base, session_factory
 from src.database.models import Documents
-from sqlalchemy import delete
+from sqlalchemy import delete, select
 from datetime import datetime
 
 async def create_tables():
@@ -11,12 +11,16 @@ async def create_tables():
 # delete element
 
 
-async def get_document(document_id: int):
+async def get_documents(ids: list[int]):
     async with session_factory() as session:
-        result = await session.get(Documents, document_id)
-        return result
+        result = await session.execute(
+            select(Documents)
+            .where(Documents.id.in_(ids))
+        )
 
-async def delete_document(document_id: int):
+        return result.scalars().all()
+
+async def delete_document_db(document_id: int):
     async with session_factory() as session:
         query = delete(Documents).where(Documents.id == document_id)
         await session.execute(query)
