@@ -30,3 +30,4 @@ async def deletion(document_id: int):
 @app.get("/health", include_in_schema=False)
 async def health():
     return {"status": "ok"}
+
