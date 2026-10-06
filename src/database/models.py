@@ -8,6 +8,7 @@ class Documents(Base):
     __tablename__ = "documents"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    rubrics: Mapped[list[str]] = mapped_column(ARRAY(String))
     text: Mapped[str]
     created_date: Mapped[datetime] = mapped_column(DateTime(timezone=False))
+    rubrics: Mapped[list[str]] = mapped_column(ARRAY(String))
+

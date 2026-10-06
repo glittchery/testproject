@@ -4,6 +4,8 @@ from src.database.queries import create_tables
 from contextlib import asynccontextmanager
 from pydantic import BaseModel
 from datetime import datetime
+from src.services import create_index, insert_documents
+
 class DocumentSchema(BaseModel):
     id: int
     rubrics: list[str]
@@ -13,6 +15,8 @@ class DocumentSchema(BaseModel):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await create_tables()
+    await create_index()
+    await insert_documents()
     yield
 
 

@@ -7,15 +7,8 @@ async def create_tables():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-# add element
 # get element
 # delete element
-
-async def insert_document(rubrics: list[str], text:str, created_date: datetime):
-    async with session_factory() as session:
-        new_document = Documents(rubrics=rubrics, text=text, created_date=created_date)
-        session.add(new_document)
-        await session.commit()
 
 
 async def get_document(document_id: int):
