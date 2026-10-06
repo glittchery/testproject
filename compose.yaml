@@ -3,7 +3,7 @@ services:
     image: postgres:17-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${DB_NAME:-server_monitoring}
+      POSTGRES_DB: ${DB_NAME:-postgres}
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASS:?Set DB_PASS in .env}
     volumes:
@@ -42,7 +42,7 @@ services:
       DB_PORT: 5432
       DB_USER: ${DB_USER:-postgres}
       DB_PASS: ${DB_PASS:?Set DB_PASS in .env}
-      DB_NAME: ${DB_NAME:-server_monitoring}
+      DB_NAME: ${DB_NAME:-postgres}
 
       ELASTICSEARCH_HOST: http://elasticsearch:9200
     depends_on:

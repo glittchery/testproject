@@ -1,11 +1,12 @@
 import csv
+import os
 from src.database.models import Documents
 from src.database.database import session_factory
 from src.database.queries import get_documents, delete_document_db
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_bulk
 
-es = AsyncElasticsearch("http://elasticsearch:9200")
+es = AsyncElasticsearch(os.environ["ELASTICSEARCH_HOST"])
 
 async def create_index():
     exists = await es.indices.exists(index="documents")
