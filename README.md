@@ -173,9 +173,7 @@ curl -o docs.json http://localhost:8000/openapi.json
 ├── posts.csv             # тестовый набор данных
 ├── docs.json             # OpenAPI-документация
 ├── .env.example          # пример настроек
-├── requirements-test.txt # зависимости для тестов
-├── pytest.ini            # настройки pytest
-├── test_api.py       # функциональные тесты
+├── test_api.py           # функциональные тесты
 └── src/
     ├── main.py           # FastAPI-приложение и эндпоинты
     ├── services.py       # работа с Elasticsearch, загрузка данных, поиск и удаление
