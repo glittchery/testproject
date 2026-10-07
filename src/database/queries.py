@@ -1,7 +1,7 @@
 from src.database.database import engine, Base, session_factory
 from src.database.models import Documents
-from sqlalchemy import delete, select
-from datetime import datetime
+from sqlalchemy import select
+from fastapi import HTTPException
 
 async def create_tables():
     async with engine.begin() as conn:
@@ -22,6 +22,9 @@ async def get_documents(ids: list[int]):
 
 async def delete_document_db(document_id: int):
     async with session_factory() as session:
-        query = delete(Documents).where(Documents.id == document_id)
-        await session.execute(query)
-        await session.commit()
+        document = await session.get(Documents, document_id)
+        if document:
+            await session.delete(document)
+            await session.commit()
+        else:
+            raise HTTPException(status_code=404, detail="Not found")
