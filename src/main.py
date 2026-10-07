@@ -1,5 +1,4 @@
-import asyncio
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Path
 from src.database.queries import create_tables
 from datetime import datetime
 from contextlib import asynccontextmanager
@@ -54,19 +53,22 @@ async def search(
     return response
 
 @app.delete(
-    "/documents",
+    "/documents/{document_id}",
+    status_code=204,
     tags=["Documents"],
     summary="Delete document",
     description="Delete a document from the database and Elasticsearch by id(int32).",
     responses={
-        200: {"description": "Document deleted successfully"},
+        204: {"description": "Document deleted successfully"},
         404: {"description": "Document not found"},
     },
 )
 async def deletion(
-        document_id: int = Query(
+        document_id: int = Path(
             gt=0,
-            le=2147483647
+            le=2147483647,
+            description="Document id(int32).",
+            examples=[1]
         )
 ):
     response = await delete_document(document_id)

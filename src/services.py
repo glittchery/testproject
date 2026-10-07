@@ -8,6 +8,7 @@ from src.database.database import session_factory
 from src.database.queries import get_documents, delete_document_db
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_bulk
+from fastapi import Response
 
 es = AsyncElasticsearch(os.environ["ELASTICSEARCH_HOST"])
 
@@ -67,8 +68,8 @@ async def insert_documents():
                 for document in documents
             ]
 
-            await session.commit()
             await async_bulk(es, actions)
+            await session.commit()
 
 
 async def search_documents(query: str):
@@ -90,7 +91,7 @@ async def search_documents(query: str):
 async def delete_document(document_id):
     await delete_document_db(document_id)
     await es.options(ignore_status=404).delete(index="documents", id=document_id)
-    return {"success": True}
+    return Response(status_code=204)
 
 
 
