@@ -15,16 +15,14 @@ services:
       retries: 10
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.19.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.2.0
     restart: unless-stopped
     environment:
       discovery.type: single-node
       xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
-    depends_on:
-      database:
-        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health || exit 1"]
       interval: 10s
@@ -37,6 +35,8 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8000}:8000"
     environment:
       DB_HOST: database
       DB_PORT: 5432
@@ -46,6 +46,8 @@ services:
 
       ELASTICSEARCH_HOST: http://elasticsearch:9200
     depends_on:
+      database:
+        condition: service_healthy
       elasticsearch:
         condition: service_healthy
     healthcheck:
